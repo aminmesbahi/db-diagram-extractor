@@ -1,0 +1,579 @@
+@startuml
+
+
+skinparam class {
+    BackgroundColor #f8f9fa
+    BorderColor #0d6efd
+    FontColor #212529
+    FontName Arial
+    FontSize 14
+    AttributeFontColor #212529
+    AttributeFontSize 14
+    AttributeFontName Arial
+    StereotypeFontColor #6c757d
+}
+
+skinparam package {
+    BackgroundColor #e9ecef
+    BorderColor #0d6efd
+}
+
+skinparam arrow {
+    Color #0d6efd
+    FontColor #212529
+    FontName Arial
+    FontSize 14
+}
+
+!define BS5FontColor #0d6efd
+!define BS5SecondaryColor #6c757d
+!define BS5SuccessColor #198754
+!define BS5InfoColor #0dcaf0
+!define BS5WarningColor #ffc107
+!define BS5DangerColor #dc3545
+!define BS5LightColor #f8f9fa
+!define BS5DarkColor #212529
+
+
+entity "AccountManagers" as accountmanagers {
+  Id : uuid not null PK
+  CreationDate : timestamp with time zone null 
+  ExternalAccountId : text not null 
+  FirstName : text null 
+  LastName : text null 
+  LastUpdateDate : timestamp with time zone null 
+}
+entity "CashflowLines" as cashflowlines {
+  Id : uuid not null PK
+  Amount : numeric not null 
+  CreationDate : timestamp with time zone null 
+  FromDate : date not null 
+  FundingServiceId : uuid not null FK
+  Interest : numeric not null 
+  LastUpdateDate : timestamp with time zone null 
+  PaymentType : text null 
+  PeriodId : integer not null 
+  Principal : numeric not null 
+  RemainingBalance : numeric not null 
+  ToDate : date not null 
+  Type : text not null 
+}
+entity "ContractDriver" as contractdriver {
+  ContractsId : uuid not null PK
+  DriversId : uuid not null PK
+}
+entity "Contracts" as contracts {
+  Id : uuid not null PK
+  AccountManagerId : uuid null FK
+  ActualDuration : integer null 
+  ActualEndDate : date null 
+  BuyBackPartyId : uuid null FK
+  CarPolicyId : text null 
+  CarPolicyVersion : text null 
+  ContractStatus : integer not null 
+  ContractedEndDate : date null 
+  CorrelationId : text null 
+  CostCenter : text null 
+  CreatedBy : text null 
+  CreationDate : timestamp with time zone null 
+  Currency : text null 
+  CustomerCommunicatedContractedEndDate : date null 
+  CustomerId : uuid null FK
+  CustomerPurchaseOrder : text null 
+  Duration : integer null 
+  DurationUnit : text null 
+  EndOfContractOption : date null 
+  ExpectedDeliveryDate : date null 
+  IndividualLeaseAgreementNumber : text not null 
+  IsCurrentVersion : boolean not null 
+  IsInvalidated : boolean not null 
+  IsMigrated : boolean not null 
+  LastUpdateDate : timestamp with time zone null 
+  LeaseObjectId : uuid null FK
+  LpEntityCode : text not null 
+  MasterAgreementId : text null 
+  MasterAgreementVersion : text null 
+  MigratedObjectId : text null 
+  MileagePerContractDuration : integer null 
+  MileagePerYear : integer null 
+  MileageUnit : text null 
+  NumberOfFormalExtensions : integer not null 
+  OrderId : text null 
+  OtherPartyId : uuid null FK
+  PaymentAnniversary : text null 
+  PaymentFrequency : text null 
+  PeriodInvoiced : text null 
+  PooledMileage : text null 
+  ProductCode : text null 
+  ProductDescription : text null 
+  ProductName : text null 
+  QuoteCalculationId : text null 
+  QuoteFullNumber : text null 
+  RegulatedStatus : text null 
+  RestrictedAccess : text null 
+  ReversalVersion : integer null 
+  SaleChannel : text null 
+  SaleDate : date null 
+  SalePrice : numeric null 
+  SalesQuoteId : text null 
+  Shortfall : numeric null 
+  StartDate : date null 
+  TaxRegion : text null 
+  Version : integer not null 
+}
+entity "Customers" as customers {
+  Id : uuid not null PK
+  BusinessType : text null 
+  Channel : text null 
+  CreationDate : timestamp with time zone null 
+  CustomerType : text null 
+  ExternalAccountId : text not null 
+  LastUpdateDate : timestamp with time zone null 
+  Name : text null 
+  PostalCode : text null 
+  Segment : text null 
+  VatNumber : text null 
+}
+entity "Drivers" as drivers {
+  Id : uuid not null PK
+  CreationDate : timestamp with time zone null 
+  ExternalContactId : text not null 
+  FirstName : text null 
+  FullName : text null 
+  LastName : text null 
+  LastUpdateDate : timestamp with time zone null 
+}
+entity "FundingOneOffCharges" as fundingoneoffcharges {
+  Id : uuid not null PK
+  Amount : numeric null 
+  AmountIncludingVAT : numeric null 
+  CreationDate : timestamp with time zone null 
+  FundingServicePaymentId : uuid not null FK
+  LastUpdateDate : timestamp with time zone null 
+  Timing : text null 
+  Type : text null 
+  VATCode : text null 
+}
+entity "FundingOneOffChargesParameters" as fundingoneoffchargesparameters {
+  Id : uuid not null PK
+  Code : text not null 
+  CreationDate : timestamp with time zone null 
+  FundingOneOffChargeId : uuid not null FK
+  LastUpdateDate : timestamp with time zone null 
+  Value : text null 
+}
+entity "FundingServiceModifications" as fundingservicemodifications {
+  Id : uuid not null PK
+  Amount : numeric null 
+  AmountIncludingVAT : numeric null 
+  CreationDate : timestamp with time zone null 
+  FundingServiceId : uuid not null FK
+  LastUpdateDate : timestamp with time zone null 
+  Percentage : numeric null 
+  Type : text null 
+  VATCode : text null 
+}
+entity "FundingServicePayments" as fundingservicepayments {
+  Id : uuid not null PK
+  CreationDate : timestamp with time zone null 
+  FundingServiceId : uuid not null FK
+  LastUpdateDate : timestamp with time zone null 
+  NumberOfInitialPayments : integer null 
+  NumberOfSubsequentPayments : integer null 
+  PeriodicPaymentAmount : numeric null 
+  PeriodicPaymentAmountIncludingVAT : numeric null 
+  PeriodicPaymentVATCode : text null 
+  TotalNumberOfPayments : integer null 
+}
+entity "FundingServices" as fundingservices {
+  Id : uuid not null PK
+  BrokerCommission : numeric null 
+  BrokerCommissionIncludingVAT : numeric null 
+  BrokerCommissionVATCode : text null 
+  ContractId : uuid not null FK
+  CostInvestmentAmount : numeric null 
+  CostInvestmentValueAmountExclVat : numeric null 
+  CostInvestmentValueAmountInclVat : numeric null 
+  CostInvestmentValueAmountVat : numeric null 
+  CreationDate : timestamp with time zone null 
+  DepreciationAmount : numeric null 
+  FundingServiceVatCode : text null 
+  InterestBaseAmount : numeric null 
+  InterestBasePercentage : numeric null 
+  InterestMarginAmount : numeric null 
+  InterestMarginPercentage : numeric null 
+  InterestTotalAmount : numeric null 
+  InterestTotalPercentage : numeric null 
+  InvestmentDifferenceAbsorbed : numeric null 
+  InvestmentValueAmount : numeric null 
+  InvestmentValueAmountExclVat : numeric null 
+  InvestmentValueAmountInclVat : numeric null 
+  InvestmentValueAmountVat : numeric null 
+  InvestmentValueWithDownpayment : numeric null 
+  LastUpdateDate : timestamp with time zone null 
+  OverMileageAmount : numeric null 
+  OverMileageAmountIncludingVAT : numeric null 
+  OverMileageVATCode : text null 
+  PeriodicBasePriceAmount : numeric null 
+  PeriodicBasePriceAmountIncludingVAT : numeric null 
+  PeriodicBasePriceVATCode : text null 
+  PeriodicSellingPriceAmount : numeric null 
+  PeriodicSellingPriceAmountIncludingVAT : numeric null 
+  PeriodicSellingPriceVATCode : text null 
+  ResidualValueActualAmount : numeric null 
+  ResidualValueBaseAmount : numeric null 
+  ResidualValueFinalAmount : numeric null 
+  UnderMileageAmount : numeric null 
+  UnderMileageAmountIncludingVAT : numeric null 
+  UnderMileageVATCode : text null 
+  UniversalServiceCode : text null 
+  UniversalServiceGroup : text null 
+}
+entity "LeaseChanges" as leasechanges {
+  Id : uuid not null PK
+  CaseId : text not null 
+  Category : text null 
+  ChildCaseId : text null 
+  CreationDate : timestamp with time zone null 
+  DestinationContractId : uuid null FK
+  EffectiveFromDate : date null 
+  ExternalCaseId : text null 
+  GoLiveDate : date null 
+  LastUpdateDate : timestamp with time zone null 
+  LeaseChangeId : uuid null 
+  QuoteValidityDate : date null 
+  Reason : text null 
+  RequestDate : date not null 
+  RequestSource : text null 
+  SourceContractId : uuid not null FK
+  Status : text not null 
+  StatusChangeDate : timestamp with time zone not null 
+  Types : text not null 
+  User : text null 
+}
+entity "LeaseObjects" as leaseobjects {
+  Id : uuid not null PK
+  Co2Emission : numeric null 
+  CreationDate : timestamp with time zone null 
+  FirstRegistrationDate : date null 
+  IsCustomRegistrationNumber : boolean not null 
+  LastUpdateDate : timestamp with time zone null 
+  LeaseObjectId : text not null 
+  MakeLocal : text null 
+  ModelLocal : text null 
+  ObjectType : text null 
+  RegistrationNumber : text null 
+  RoadTaxDueDate : date null 
+  StartMileage : integer null 
+  Status : text null 
+  Uin : text null 
+  UpdatedOn : timestamp with time zone not null 
+  VehicleType : text null 
+}
+entity "ModificationsSums" as modificationssums {
+  Id : uuid not null PK
+  Amount : numeric null 
+  AmountIncludingVAT : numeric null 
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  Percentage : numeric null 
+  PricingSumId : uuid not null FK
+  Type : text null 
+}
+entity "OneOffChargesSums" as oneoffchargessums {
+  Id : uuid not null PK
+  Amount : numeric null 
+  AmountIncludingVAT : numeric null 
+  ContractId : uuid not null FK
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  Timing : text null 
+  Type : text null 
+}
+entity "OtherParties" as otherparties {
+  Id : uuid not null PK
+  CreationDate : timestamp with time zone null 
+  ExternalAccountId : text not null 
+  LastUpdateDate : timestamp with time zone null 
+  Name : text null 
+  Type : text null 
+}
+entity "PricingSums" as pricingsums {
+  Id : uuid not null PK
+  ContractId : uuid not null FK
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  NumberOfInitialPayments : integer null 
+  NumberOfSubsequentPayments : integer null 
+  OverMileageAmount : numeric null 
+  OverMileageAmountIncludingVAT : numeric null 
+  PeriodicBaseRentalAmount : numeric null 
+  PeriodicBaseRentalAmountIncludingVAT : numeric null 
+  PeriodicRentalAmount : numeric null 
+  PeriodicRentalAmountIncludingVAT : numeric null 
+  TotalNumberOfPayments : integer null 
+  UnderMileageAmount : numeric null 
+  UnderMileageAmountIncludingVAT : numeric null 
+}
+entity "PurchasingServices" as purchasingservices {
+  Id : uuid not null PK
+  CapitalCostGrantAmount : numeric null 
+  CapitalCostGrantPercentage : numeric null 
+  CapitalCostTotalAmount : numeric null 
+  CapitalCostVehicleValueBaseCostAmount : numeric null 
+  CapitalCostVehicleValueDealerFittedOptionsAmount : numeric null 
+  CapitalCostVehicleValueManufacturerOptionsAmount : numeric null 
+  CommissionAmount : numeric null 
+  ContractId : uuid not null FK
+  CostInvestmentAmount : numeric null 
+  CreationDate : timestamp with time zone null 
+  InvestmentDifferenceAbsorbed : numeric null 
+  InvestmentValueAmount : numeric null 
+  InvestmentValueWithDownpayment : numeric null 
+  IsDriverKitSent : boolean null 
+  LastUpdateDate : timestamp with time zone null 
+  PurchaseCostDeliveryFeeAmount : numeric null 
+  PurchaseCostLeasePackageAmount : numeric null 
+  PurchaseCostRepaintFeeAmount : numeric null 
+  PurchaseCostTotalAmount : numeric null 
+  PurchaseCostTransportationCostAmount : numeric null 
+  PurchasingServiceVATCode : text null 
+  SourceOfSupply : text null 
+  TaxesLicensePlateRegistrationFeeAmount : numeric null 
+  TaxesRegistrationTaxAmount : numeric null 
+  TaxesTotalAmount : numeric null 
+  UniversalServiceCode : text null 
+  UniversalServiceGroup : text null 
+  VehicleTaxableValue : numeric null 
+}
+entity "ServiceAttributes" as serviceattributes {
+  Id : uuid not null PK
+  CreationDate : timestamp with time zone null 
+  HSSDescription : text null 
+  LastUpdateDate : timestamp with time zone null 
+  Name : text not null 
+  ParameterCode : text null 
+  ServiceId : uuid not null FK
+  Value : text null 
+}
+entity "ServiceModifications" as servicemodifications {
+  Id : uuid not null PK
+  Amount : numeric null 
+  AmountIncludingVAT : numeric null 
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  Percentage : numeric null 
+  ServicePricingId : uuid not null FK
+  Type : text null 
+  VATCode : text null 
+}
+entity "ServiceObjectAttributes" as serviceobjectattributes {
+  Id : uuid not null PK
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  Name : text not null 
+  ServiceObjectId : uuid not null FK
+  Value : text null 
+}
+entity "ServiceObjectStates" as serviceobjectstates {
+  Id : uuid not null PK
+  ChangeDate : timestamp with time zone null 
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  ServiceObjectId : uuid not null FK
+  Status : text not null 
+}
+entity "ServiceObjects" as serviceobjects {
+  Id : uuid not null PK
+  CreationDate : timestamp with time zone null 
+  ExternalId : text not null 
+  LastUpdateDate : timestamp with time zone null 
+  ServiceId : uuid not null FK
+}
+entity "ServiceOneOffCharges" as serviceoneoffcharges {
+  Id : uuid not null PK
+  Amount : numeric null 
+  AmountIncludingVAT : numeric null 
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  ServicePaymentId : uuid not null FK
+  Timing : text null 
+  Type : text null 
+  VATCode : text null 
+}
+entity "ServiceOperationalBuffers" as serviceoperationalbuffers {
+  Id : uuid not null PK
+  Available : text null 
+  Contracted : text null 
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  MeasureUnit : text null 
+  ParameterCode : text null 
+  ServiceId : uuid not null FK
+  Used : text null 
+}
+entity "ServicePayments" as servicepayments {
+  Id : uuid not null PK
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  NumberOfInitialPayments : integer null 
+  NumberOfSubsequentPayments : integer null 
+  PeriodicPaymentAmount : numeric null 
+  PeriodicPaymentAmountIncludingVAT : numeric null 
+  PeriodicPaymentVATCode : text null 
+  ServicePricingId : uuid not null FK
+  TotalNumberOfPayments : integer null 
+}
+entity "ServicePricings" as servicepricings {
+  Id : uuid not null PK
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  OverMileageAmount : numeric null 
+  OverMileageAmountIncludingVAT : numeric null 
+  OverMileageVATCode : text null 
+  PeriodicBasePriceAmount : numeric null 
+  PeriodicBasePriceAmountIncludingVAT : numeric null 
+  PeriodicBasePriceVATCode : text null 
+  PeriodicSellingPriceAmount : numeric null 
+  PeriodicSellingPriceAmountIncludingVAT : numeric null 
+  PeriodicSellingPriceVATCode : text null 
+  ServiceId : uuid not null FK
+  ServiceVatCode : text null 
+  UnderMileageAmount : numeric null 
+  UnderMileageAmountIncludingVAT : numeric null 
+  UnderMileageVATCode : text null 
+}
+entity "ServiceStates" as servicestates {
+  Id : uuid not null PK
+  ActualEndDate : date null 
+  ContractedEndDate : date null 
+  CreationDate : timestamp with time zone null 
+  CustomerCommunicatedContractedEndDate : date null 
+  LastUpdateDate : timestamp with time zone null 
+  ServiceId : uuid not null FK
+  StartDate : date null 
+}
+entity "Services" as services {
+  Id : uuid not null PK
+  ContractId : uuid not null FK
+  CreationDate : timestamp with time zone null 
+  LastUpdateDate : timestamp with time zone null 
+  UniversalServiceCode : text not null 
+  UniversalServiceCodeDescription : text null 
+  UniversalServiceCodeName : text null 
+  UniversalServiceGroup : text not null 
+  UniversalServiceGroupDescription : text null 
+  UniversalServiceGroupName : text null 
+}
+entity "TerminationDetails" as terminationdetails {
+  Id : uuid not null PK
+  ActualDrivenMileage : integer null 
+  AmountFallingDue : numeric null 
+  Arrears : numeric null 
+  BuyerAddress : text null 
+  BuyerCountry : text null 
+  BuyerName : text null 
+  BuyerPostalCode : text null 
+  BuyerTown : text null 
+  ChargeET : boolean null 
+  ChargeMVA : boolean null 
+  CollectionDate : date null 
+  ContractId : uuid not null FK
+  CreationDate : timestamp with time zone null 
+  EndOfContractReason : text null 
+  EndOfContractType : text null 
+  FundsReceivedDate : date null 
+  InvoicedMileage : integer null 
+  IsEarlyTermination : boolean null 
+  IsEndDateWithinGracePeriod : boolean null 
+  LastUpdateDate : timestamp with time zone null 
+  OffHireDate : date null 
+  QuoteValidityDate : date null 
+  SaleType : text null 
+}
+entity "__EFMigrationsHistory" as __efmigrationshistory {
+  MigrationId : character varying(150) not null PK
+  ProductVersion : character varying(32) not null 
+}
+entity "__SyncJobs" as __syncjobs {
+  Id : uuid not null PK
+  BatchSize : integer null 
+  CorrelationId : text null 
+  CreationDate : timestamp with time zone null 
+  Cursor : integer null 
+  ErrorMessage : text null 
+  ErrorSource : text null 
+  ErrorStackTrace : text null 
+  ErrorType : text null 
+  FailedCount : integer null 
+  FinishedOn : timestamp with time zone null 
+  IsStarted : boolean not null 
+  LastUpdateDate : timestamp with time zone null 
+  ProcessedCount : integer null 
+  RunNow : boolean not null 
+  ScheduleOn : timestamp with time zone null 
+  StartedOn : timestamp with time zone null 
+  Status : text null 
+  StatusDescription : text null 
+  SyncDataType : text null 
+  TotalCount : integer null 
+  UniqueReference : text not null 
+}
+entity "dlm__Contracts" as dlm__contracts {
+  CreationDate : timestamp with time zone null 
+  DisposeDate : date null 
+  DisposedAt : timestamp with time zone null 
+  FinalNoticeDate : date null 
+  Id : uuid not null 
+  IndividualLeaseAgreementNumber : text not null 
+  KeepFor : interval null 
+  KeepFromDate : timestamp with time zone not null 
+}
+entity "dlm__Contracts__Dependencies" as dlm__contracts__dependencies {
+  ColumnName : text not null 
+  CreatedBy : text null 
+  CreationDate : timestamp with time zone null 
+  DisposeMethod : text not null 
+  Id : uuid not null 
+  TableName : text not null 
+}
+entity "dlm__ForgottenRequests" as dlm__forgottenrequests {
+  CreatedBy : text null 
+  CreationDate : timestamp with time zone null 
+  CustomerId : text null 
+  DisposeMethod : text not null 
+  DisposedAt : timestamp with time zone null 
+  Id : uuid not null 
+  IndividualLeaseAgreementNumber : text null 
+  Reason : text null 
+}
+contracts }|-- accountmanagers
+contracts }|-- otherparties
+purchasingservices }|-- contracts
+fundingservices }|-- contracts
+oneoffchargessums }|-- contracts
+pricingsums }|-- contracts
+services }|-- contracts
+terminationdetails }|-- contracts
+contractdriver }|-- contracts
+contracts }|-- customers
+leasechanges }|-- contracts
+contractdriver }|-- drivers
+fundingoneoffchargesparameters }|-- fundingoneoffcharges
+fundingservicemodifications }|-- fundingservices
+fundingservicepayments }|-- fundingservices
+cashflowlines }|-- fundingservices
+fundingoneoffcharges }|-- fundingservicepayments
+contracts }|-- leaseobjects
+modificationssums }|-- pricingsums
+serviceattributes }|-- services
+serviceoperationalbuffers }|-- services
+servicepricings }|-- services
+serviceobjects }|-- services
+servicestates }|-- services
+serviceobjectstates }|-- serviceobjects
+serviceobjectattributes }|-- serviceobjects
+serviceoneoffcharges }|-- servicepayments
+servicepayments }|-- servicepricings
+servicemodifications }|-- servicepricings
+@enduml
